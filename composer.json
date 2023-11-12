@@ -1,0 +1,17 @@
+{
+  "name": "zhaojiaxuan/man-curd",
+  "type": "library",
+  "license": "MIT",
+  "description": "webman命令行快速CURD工具，避免重复造轮子。",
+  "require": {
+    "php": ">=8.1",
+    "linfly/annotation": "1.*",
+    "topthink/think-validate": "^2.0",
+    "webman/console": "^1.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "ZhaoJiaXuan\\ManCurd\\": "src"
+    }
+  }
+}
