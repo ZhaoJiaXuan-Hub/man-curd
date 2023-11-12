@@ -11,9 +11,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Webman\Console\Util;
 
 
-class MakeCurdCommand extends Command
+class ManCurdCommand extends Command
 {
-    protected static $defaultName = 'make:curd';
+    protected static $defaultName = 'man-curd:curd';
     protected static $defaultDescription = '使用命令快速CURD代码';
 
     /**

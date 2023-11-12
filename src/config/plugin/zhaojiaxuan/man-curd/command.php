@@ -1,4 +1,4 @@
 <?php
 return [
-    \ManCurd\App\command\MakeCurdCommand::class
+    \ManCurd\App\command\ManCurdCommand::class
 ];
