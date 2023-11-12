@@ -7,7 +7,10 @@
     "php": ">=8.1",
     "linfly/annotation": "1.*",
     "topthink/think-validate": "^2.0",
-    "webman/console": "^1.2"
+    "webman/console": "^1.2",
+    "illuminate/database": ">=7.30",
+    "illuminate/pagination": ">=7.30",
+    "illuminate/events": ">=7.30"
   },
   "autoload": {
     "psr-4": {
