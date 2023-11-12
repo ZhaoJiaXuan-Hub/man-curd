@@ -2,7 +2,7 @@
 
 namespace ManCurd\App;
 
-use ManCurd\App\command\enum\HttpCodeEnum;
+use ManCurd\App\enum\HttpCodeEnum;
 use support\Response;
 
 class AbstractController
