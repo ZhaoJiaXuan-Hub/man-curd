@@ -11,7 +11,7 @@
   },
   "autoload": {
     "psr-4": {
-      "ManCurd\\App": "src/app",
+      "ManCurd\\App\\": "src/app",
       "app\\command\\": "src/app/command"
     }
   }
