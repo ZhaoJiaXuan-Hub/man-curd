@@ -1,6 +1,6 @@
 <?php
 
-namespace app\util;
+namespace Zhaojiaxuan\ManCurd\app\util;
 
 class Tree
 {

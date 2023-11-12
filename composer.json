@@ -11,7 +11,8 @@
   },
   "autoload": {
     "psr-4": {
-      "ZhaoJiaXuan\\ManCurd\\": "src"
+      "ManCurd\\App": "src/app",
+      "app\\command\\": "src/app/command"
     }
   }
 }

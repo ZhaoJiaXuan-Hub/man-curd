@@ -1,9 +1,9 @@
 <?php
 
-namespace app;
+namespace ManCurd\App;
 
-use app\exception\BusinessException;
-use app\util\Tree;
+use ManCurd\App\exception\BusinessException;
+use ManCurd\App\util\Tree;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use support\Db;
@@ -172,7 +172,7 @@ abstract class AbstractMapper
      */
     protected function inputFilter(array $data): array
     {
-        $table = config('database.connections.mysql.prefix') . $this->model->getTable();
+        $table = AbstractMapper . phpconfig('database.connections.mysql.prefix') . $this->model->getTable();
         $allow_column = $this->model->getConnection()->select("desc `$table`");
         if (!$allow_column) {
             throw new BusinessException('数据表不存在', 2);
@@ -217,7 +217,7 @@ abstract class AbstractMapper
         $where = $request->get();
         $page = (int)$request->get('page');
         $page = $page > 0 ? $page : 1;
-        $table = config('database.connections.mysql.prefix') . $this->model->getTable();
+        $table = AbstractMapper . phpconfig('database.connections.mysql.prefix') . $this->model->getTable();
 
         $allow_column = Db::select("desc `$table`");
         if (!$allow_column) {

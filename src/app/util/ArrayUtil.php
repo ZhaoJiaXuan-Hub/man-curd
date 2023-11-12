@@ -1,6 +1,6 @@
 <?php
 
-namespace app\util;
+namespace ManCurd\app\util;
 
 class ArrayUtil
 {

@@ -42,9 +42,9 @@ class MakeCurdCommand extends Command
         // 创建服务层
         $service = $this->createService($input, $output, $mapper);
         // 创建请求验证层
-        $request = $this->createRequest();
+        $request = $this->createRequest($input, $output);
         // 创建控制器
-        $this->createController($input, $output, $service);
+        $this->createController($input, $output, $service,$request);
         return self::SUCCESS;
     }
 
@@ -134,7 +134,7 @@ class MakeCurdCommand extends Command
 
 namespace $namespace;
 
-use app\AbstractModel;
+use ManCurd\App\\AbstractModel;
 
 /**
 $properties
@@ -214,7 +214,7 @@ EOF;
 
 namespace $namespace;
 
-use app\AbstractMapper;
+use ManCurd\App\\AbstractMapper;
 use $data[1]\\$data[0];
 
 class $name extends AbstractMapper
@@ -301,13 +301,13 @@ EOF;
 <?php
 namespace $impl_namespace;
 
-use app\AbstractService;
+use ManCurd\App\\AbstractService;
 use $data[1]\\$data[0];
 use $namespace\\$name;
 
 class $impl_name extends AbstractService implements $name
 {
-    public \app\AbstractMapper \$mapper;
+    public \Zhaojiaxuan\ManCurd\AbstractMapper \$mapper;
 
     public function assignMapper(): void
     {
@@ -319,25 +319,137 @@ EOF;
         file_put_contents($impl_file, $impl_content);
     }
 
-    protected function createController(InputInterface $input, OutputInterface $output,array $data): void
+    protected function createRequest(InputInterface $input, OutputInterface $output): array
+    {
+        $name = $input->getArgument('name');
+        $name = Util::nameToClass($name);
+        $output->writeln("Make request $name");
+        $name .= "Request";
+        $name = ucfirst($name);
+        $request_str = Util::guessPath(app_path(), 'request') ?: 'request';
+        $file = app_path() . "/$request_str/$name.php";
+        $namespace = $request_str === 'Request' ? 'App\Request' : 'app\request';
+        $this->createRequestEnd($name, $namespace, $file);
+        return [$name, $namespace, $file];
+    }
+
+    protected function createRequestEnd(string $name, string $namespace, string $file)
+    {
+        $path = pathinfo($file, PATHINFO_DIRNAME);
+        if (!is_dir($path)) {
+            mkdir($path, 0777, true);
+        }
+        $mapper_content = <<<EOF
+<?php
+
+namespace $namespace;
+
+use ManCurd\App\\AbstractRequest;
+
+class $name  extends AbstractRequest
+{
+    
+    /**
+     * 验证规则
+     * @var array
+     */
+    protected \$rule = [];
+
+    /**
+     * 提示信息
+     * @var array
+     */
+    protected \$message = [];
+    
+    /**
+     * 查询验证规则
+     * @return string[]
+     */
+    public function retrieveRules(): array
+    {
+        return [];
+    }
+    
+    /**
+     * 查询验证消息
+     * @return string[]
+     */
+    public function retrieveMessages(): array
+    {
+        return [];
+    }
+    
+    /**
+     * 创建验证规则
+     * @return string[]
+     */
+    public function createRules(): array
+    {
+        return [];
+    }
+    
+    /**
+     * 创建验证消息
+     * @return string[]
+     */
+    public function createMessages(): array
+    {
+        return [];
+    }
+    
+    /**
+     * 更新验证规则
+     * @return string[]
+     */
+    public function updateRules(): array
+    {
+        return [];
+    }
+    
+    /**
+     * 更新验证消息
+     * @return string[]
+     */
+    public function updateMessages(): array
+    {
+        return [];
+    }
+    
+    /**
+     * 删除验证规则
+     * @return string[]
+     */
+    public function deleteRules(): array
+    {
+        return [];
+    }
+    
+    /**
+     * 删除验证消息
+     * @return string[]
+     */
+    public function deleteMessages(): array
+    {
+        return [];
+    }
+}
+
+EOF;
+        file_put_contents($file, $mapper_content);
+    }
+
+    protected function createController(InputInterface $input, OutputInterface $output,$service,$request): void
     {
         $name = $input->getArgument('controller_name');
         if (!$name) {
             $name = $input->getArgument('name');
         }
         $output->writeln("Make controller $name");
-        // 获取名称并转成权限标识
-        $small_name = $input->getArgument('name');
-        $replacement = ":";
-        if (str_contains($small_name, "-")) {
-            $newString = str_replace("-", $replacement, $small_name);
-            $small_name = $newString;
-        }
-        // 获取权限标识前缀将他转成路由
-        $router = $small_name;
+        // 获取名称将他转成路由格式
+        $router = $input->getArgument('name');
         $replacement = "/";
-        if (str_contains($router, ":")) {
-            $router = str_replace(":", $replacement, $router);
+        if (str_contains($router, "-")) {
+            $router = str_replace("-", $replacement, $router);
         }
         $router = "/$router";
         // 是否开启控制器后缀
@@ -354,16 +466,14 @@ EOF;
         if (str_contains($router, "/")) {
             $namespace_suffix = str_replace("/", '\\', $namespace_suffix);
         }
-        var_dump($router);
         $parts = explode('/', $router);
         $file_path_suffix = implode('', array_slice($parts, 0, 2));
-        var_dump($file_path_suffix);
         // 控制器地址
         $file = app_path() . "/$controller_str/$file_path_suffix/$name.php";
         // 命名空间
         $namespace = $controller_str === 'Mapper' ? 'App\Controller' : 'app\controller';
         $namespace .= $namespace_suffix;
-        $this->createControllerEnd($name, $namespace, $file,$data,$small_name,$router);
+        $this->createControllerEnd($name, $namespace, $file,$router,$service,$request);
     }
 
     /**
@@ -371,62 +481,56 @@ EOF;
      * @param $namespace
      * @param $file
      * @param $data
-     * @param $small_name
      * @param $router
      * @return void
      */
-    protected function createControllerEnd($name, $namespace, $file,$data,$small_name,$router): void
+    protected function createControllerEnd($name, $namespace, $file,$router,$service,$request): void
     {
         $path = pathinfo($file, PATHINFO_DIRNAME);
         if (!is_dir($path)) {
             mkdir($path, 0777, true);
         }
-        $mapper_name = $this->convertToCamelCase($data[0]);
+        $mapper_name = $this->convertToCamelCase($service[0]);
         $controller_content = <<<EOF
 <?php
 
 namespace $namespace;
 
-use app\\AbstractController;
-use app\\annotation\\Permission;
-use app\\request\\SystemAccountRequest;
+use ManCurd\App\\AbstractController;
 use LinFly\\Annotation\\Annotation\\Inject;
 use LinFly\\Annotation\\Route\\Controller;
 use LinFly\\Annotation\\Route\Route;
 use LinFly\\Annotation\\Validate\\Validate;
 use support\\Request;
-use $data[1]\\$data[0];
+use $service[1]\\$service[0];
+use $request[1]\\$request[0];
 
 #[Controller(prefix: '$router')]
-#[Validate(validate: SystemAccountRequest::class)]
+#[Validate(validate: $request[0]::class)]
 class $name extends AbstractController
 {
     #[Inject]
-    protected $data[0] $$mapper_name;
+    protected $service[0] $$mapper_name;
 
     #[Route(path: 'retrieve', methods: ['GET', 'OPTIONS'])]
-    #[Permission('$small_name:retrieve')]
     public function retrieve(Request \$request): \support\Response
     {
         return \$this->success(\$this->{$mapper_name}->retrieve(\$request));
     }
 
     #[Route(path: 'create', methods: ['PUT', 'OPTIONS'])]
-    #[Permission('$small_name:create')]
     public function create(Request \$request): \support\Response
     {
         return \$this->success(\$this->{$mapper_name}->create(\$request));
     }
 
     #[Route(path: 'update', methods: ['PUT', 'OPTIONS'])]
-    #[Permission('$small_name:update')]
     public function update(Request \$request): \support\Response
     {
         return \$this->success(\$this->{$mapper_name}->update(\$request));
     }
 
     #[Route(path: 'delete', methods: ['DELETE', 'OPTIONS'])]
-    #[Permission('$small_name:delete')]
     public function delete(Request \$request): \support\Response
     {
         return \$this->success(\$this->{$mapper_name}->delete(\$request));

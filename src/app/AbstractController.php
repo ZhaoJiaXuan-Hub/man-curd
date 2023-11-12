@@ -1,8 +1,8 @@
 <?php
 
-namespace app;
+namespace ManCurd\App;
 
-use app\enum\HttpCodeEnum;
+use ManCurd\App\enum\HttpCodeEnum;
 use support\Response;
 
 class AbstractController

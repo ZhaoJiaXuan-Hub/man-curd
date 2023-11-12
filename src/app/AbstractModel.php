@@ -1,6 +1,6 @@
 <?php
 
-namespace app;
+namespace ManCurd\App;
 
 use DateTimeInterface;
 use support\Model;

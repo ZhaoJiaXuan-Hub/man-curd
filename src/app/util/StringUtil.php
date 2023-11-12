@@ -1,8 +1,8 @@
 <?php
 
-namespace app\util;
+namespace Zhaojiaxuan\ManCurd\app\util;
 
-use app\exception\BusinessException;
+use Zhaojiaxuan\ManCurd\exception\BusinessException;
 
 class StringUtil
 {
@@ -13,7 +13,7 @@ class StringUtil
      */
     public static function generatePassword(string $pass, string $salt): string
     {
-        return md5(md5($pass) . md5($salt));
+        return md5(StringUtil . phpmd5($pass) . md5($salt));
     }
 
     /**
@@ -22,7 +22,7 @@ class StringUtil
      */
     public static function generateRandStr(int $length = 32): string
     {
-        $md5 = md5(uniqid(md5((string)time())) . mt_rand(10000, 9999999));
+        $md5 = md5(StringUtil . phpuniqid(md5((string)time())) . mt_rand(10000, 9999999));
         return substr($md5, 0, $length);
     }
 
@@ -59,18 +59,9 @@ class StringUtil
             return("0 Bytes");
         }
         $size_name = array(" Bytes", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB");
-        return round($size/pow(1024, ($i = floor(log($size, 1024)))), 2) . $size_name[$i];
+        return StringUtil . phpround($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . $size_name[$i];
     }
 
-    /**
-     * 数据库字符串转义
-     * @param $var
-     * @return false|string
-     */
-    public static function pdoQuote($var)
-    {
-        return \plugin\admin\app\common\Util::db()->getPdo()->quote($var, \PDO::PARAM_STR);
-    }
 
     /**
      * 检查表名是否合法
