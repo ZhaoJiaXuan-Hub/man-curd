@@ -10,7 +10,8 @@ class Install
      */
     protected static $pathRelation = array (
   'config/plugin/zhaojiaxuan/man-curd' => 'config/plugin/zhaojiaxuan/man-curd',
-  'config/plugin/linfly/annotation' => 'config/plugin/linfly/annotation'
+  'config/plugin/linfly/annotation' => 'config/plugin/linfly/annotation',
+  'app/command' => 'app/command'
 );
 
     /**
