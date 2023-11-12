@@ -8,7 +8,7 @@
  */
 declare (strict_types=1);
 
-use ManCurd\App\enum\HttpCodeEnum;
+use ManCurd\App\command\enum\HttpCodeEnum;
 
 return [
     // 注解扫描路径

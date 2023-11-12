@@ -1,8 +1,8 @@
 <?php
 
-namespace ManCurd\App\exception;
+namespace ManCurd\App\command\exception;
 
-use ManCurd\App\enum\HttpCodeEnum;
+use ManCurd\App\command\enum\HttpCodeEnum;
 use support\exception\BusinessException as BaseException;
 use Webman\Http\Request;
 use Webman\Http\Response;

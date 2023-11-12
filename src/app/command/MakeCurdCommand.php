@@ -1,6 +1,6 @@
 <?php
 
-namespace app\command;
+namespace ManCurd\App\command;
 
 use Doctrine\Inflector\InflectorFactory;
 use Symfony\Component\Console\Command\Command;
@@ -134,7 +134,7 @@ class MakeCurdCommand extends Command
 
 namespace $namespace;
 
-use ManCurd\App\\AbstractModel;
+use ManCurd\App\command\AbstractModel;
 
 /**
 $properties
@@ -214,7 +214,7 @@ EOF;
 
 namespace $namespace;
 
-use ManCurd\App\\AbstractMapper;
+use ManCurd\App\command\AbstractMapper;
 use $data[1]\\$data[0];
 
 class $name extends AbstractMapper
@@ -301,7 +301,7 @@ EOF;
 <?php
 namespace $impl_namespace;
 
-use ManCurd\App\\AbstractService;
+use ManCurd\App\command\AbstractService;
 use $data[1]\\$data[0];
 use $namespace\\$name;
 
@@ -344,7 +344,7 @@ EOF;
 
 namespace $namespace;
 
-use ManCurd\App\\AbstractRequest;
+use ManCurd\App\command\AbstractRequest;
 
 class $name  extends AbstractRequest
 {
@@ -496,7 +496,7 @@ EOF;
 
 namespace $namespace;
 
-use ManCurd\App\\AbstractController;
+use ManCurd\App\command\AbstractController;
 use LinFly\\Annotation\\Annotation\\Inject;
 use LinFly\\Annotation\\Route\\Controller;
 use LinFly\\Annotation\\Route\Route;

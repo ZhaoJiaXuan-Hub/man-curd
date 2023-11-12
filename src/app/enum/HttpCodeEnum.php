@@ -1,6 +1,6 @@
 <?php
 
-namespace ManCurd\App\enum;
+namespace ManCurd\App\command\enum;
 
 /**
  * HTTP状态码枚举

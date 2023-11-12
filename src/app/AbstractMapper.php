@@ -2,8 +2,8 @@
 
 namespace ManCurd\App;
 
-use ManCurd\App\exception\BusinessException;
-use ManCurd\App\util\Tree;
+use ManCurd\App\command\exception\BusinessException;
+use ManCurd\App\command\util\Tree;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use support\Db;
